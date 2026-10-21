@@ -236,40 +236,41 @@ export function Icon({ name, size = 20, className = '', ...rest }: IconProps): J
 }
 
 /** Logo GMX Motors : monogramme industriel + typographie condensée. */
+/**
+ * Logo officiel GMX Motors (emblème + lettrage), décliné pour les fonds
+ * clairs et sombres. Les fichiers sont dans `public/brand/` et proviennent
+ * du logo fourni par la marque : aucune reconstruction approximative.
+ */
 export function Logo({
   variant = 'dark',
   compact = false,
+  className = '',
 }: {
   variant?: 'dark' | 'light';
   compact?: boolean;
+  className?: string;
 }): JSX.Element {
-  const primary = variant === 'light' ? '#ffffff' : '#16351f';
-  const accent = '#3d8651';
+  if (compact) {
+    return (
+      <img
+        src={variant === 'light' ? '/brand/mark-light.png' : '/brand/mark.png'}
+        alt="GMX Motors"
+        width={256}
+        height={256}
+        className={`h-10 w-10 shrink-0 ${className}`}
+        decoding="async"
+      />
+    );
+  }
 
   return (
-    <span className="inline-flex items-center gap-2.5">
-      <svg viewBox="0 0 40 40" className="h-9 w-9 shrink-0" aria-hidden="true" focusable="false">
-        <rect width="40" height="40" rx="9" fill={primary} />
-        <path d="M8 27V13h6.5v4.2h-2.6v5.6h2.6V27H8Z" fill={accent} />
-        <path d="M16.5 27 20.5 13h3.2l4 14h-3.6l-.6-2.5h-2.8l-.6 2.5h-3.6Zm4.2-5.4h1.9l-.95-4.3-.95 4.3Z" fill="#ffffff" />
-        <path d="M26.5 27V13H32v3.2h-2v2.3h1.9v3.1H30V27h-3.5Z" fill={accent} />
-      </svg>
-      {!compact && (
-        <span className="flex flex-col leading-none">
-          <span
-            className="font-display text-[1.35rem] font-bold uppercase tracking-[0.12em]"
-            style={{ color: primary }}
-          >
-            GMX Motors
-          </span>
-          <span
-            className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.2em]"
-            style={{ color: variant === 'light' ? '#bedcc4' : '#5b6462' }}
-          >
-            Matériel agricole
-          </span>
-        </span>
-      )}
-    </span>
+    <img
+      src={variant === 'light' ? '/brand/logo-light.png' : '/brand/logo.png'}
+      alt="GMX Motors"
+      width={800}
+      height={202}
+      className={`h-8 w-auto sm:h-9 lg:h-10 ${className}`}
+      decoding="async"
+    />
   );
 }

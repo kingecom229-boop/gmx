@@ -1,6 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GMX Motors">
-  <rect width="64" height="64" rx="14" fill="#16351f"/>
-  <path d="M12 44V20h11v7h-4.5v10H23v7H12Z" fill="#3d8651"/>
-  <path d="M26.5 44 33 20h5.3L45 44h-6l-1-4.2h-4.7L32.3 44h-5.8Zm7.2-9.2h3.1L35.2 27l-1.5 7.8Z" fill="#ffffff"/>
-  <path d="M43 44V20h9v5.4h-3.4v4h3.2v5.2h-3.2V44H43Z" fill="#3d8651"/>
+  <title>GMX Motors</title>
+  <defs>
+    <linearGradient id="gmxGreen" x1="0" y1="1" x2="0.3" y2="0">
+      <stop offset="0" stop-color="#2e7d1f"/>
+      <stop offset="1" stop-color="#68b74c"/>
+    </linearGradient>
+    <linearGradient id="gmxGold" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#efa501"/>
+      <stop offset="1" stop-color="#ffc21a"/>
+    </linearGradient>
+    <clipPath id="gmxPlate">
+      <rect width="64" height="64" rx="14"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#gmxPlate)">
+    <rect width="64" height="64" fill="#0d100f"/>
+
+    <!-- Lever de soleil : l'arc doré de la marque -->
+    <path
+      d="M4 42a25 25 0 0 1 50 0"
+      fill="none"
+      stroke="url(#gmxGold)"
+      stroke-width="4"
+      stroke-linecap="round"
+      opacity=".92"
+    />
+
+    <!-- Tracteur : silhouette pleine, lisible même en 16 px -->
+    <g fill="url(#gmxGreen)">
+      <!-- châssis -->
+      <rect x="14" y="31" width="36" height="7" rx="2"/>
+      <!-- cabine -->
+      <path d="M14 32V18.5a1.5 1.5 0 0 1 1.5-1.5h9.8a2 2 0 0 1 1.7 1l2.6 5.4V32z"/>
+      <!-- capot -->
+      <path d="M30.5 23.4h14.2a2.6 2.6 0 0 1 2.6 2.3l.7 5.3H30.5z"/>
+      <!-- échappement -->
+      <rect x="33" y="16.6" width="2.6" height="7" rx="1.2"/>
+      <!-- roue arrière -->
+      <circle cx="21.5" cy="41.5" r="8.6"/>
+      <!-- roue avant -->
+      <circle cx="44.5" cy="43.6" r="5.2"/>
+    </g>
+
+    <!-- Creux des roues et vitrage -->
+    <g fill="#0d100f">
+      <circle cx="21.5" cy="41.5" r="3.4"/>
+      <circle cx="44.5" cy="43.6" r="1.9"/>
+      <rect x="17.6" y="21" width="9" height="7.4" rx="1.2"/>
+    </g>
+
+    <!-- Sillons du champ -->
+    <g fill="none" stroke="#2e7d1f" stroke-linecap="round">
+      <path d="M1 53.5c10.5-4 21.5-4.8 32.4-2.4" stroke-width="3"/>
+      <path d="M-1 59.4c11.8-4.8 24.6-5.7 37-3.2" stroke-width="2.5" opacity=".66"/>
+      <path d="M45 50.4c6.6-1.4 13.2-1.1 19.2 1" stroke-width="2.5" opacity=".5"/>
+    </g>
+  </g>
 </svg>

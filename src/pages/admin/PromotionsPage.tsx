@@ -23,7 +23,7 @@ const EMPTY: Record<string, unknown> = {
 
 const FIELDS: FieldDef[] = [
   { key: 'title', label: "Titre de l'opération", required: true, span: 2 },
-  { key: 'code', label: 'Code interne', required: true, hint: 'Identifiant unique, non affiché au client.' },
+  { key: 'code', label: 'Code interne', hint: 'Identifiant unique, non affiché au client. Généré depuis le titre si laissé vide.' },
   {
     key: 'kind',
     label: 'Type',
@@ -141,8 +141,26 @@ export function PromotionsPage(): JSX.Element {
       throw new ApiError(400, 'invalid_period', 'La date de fin doit être postérieure à la date de début.');
     }
 
+    // Code interne : dérivé du titre si le champ est laissé vide, pour ne pas
+    // bloquer la création sur un détail purement technique.
+    const rawCode = String(values.code ?? '').trim();
+    const derivedCode =
+      rawCode ||
+      String(values.title ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 60)
+        .toUpperCase();
+
+    if (!derivedCode) {
+      throw new ApiError(400, 'missing_code', "Indiquez un code interne (il sert d'identifiant unique).");
+    }
+
     const payload: Record<string, unknown> = {
-      code: String(values.code ?? '').trim(),
+      code: derivedCode,
       title: String(values.title ?? '').trim(),
       description: String(values.description ?? '').trim() || null,
       kind: values.kind,

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Icon, Logo } from '../Icon';
 import { Button, IconButton } from '../ui';
 import { useSettings } from '@/context/SettingsContext';
@@ -18,9 +18,11 @@ export function AnnouncementBar(): JSX.Element | null {
   const { settings } = useSettings();
   if (!settings.announcement_enabled || !settings.announcement_text.trim()) return null;
 
+  // L'or de la marque n'est lisible qu'avec un texte anthracite : jamais de
+  // texte blanc sur fond doré (contraste insuffisant).
   const tones = {
-    neutral: 'bg-ink-900 text-ink-100',
-    offer: 'bg-accent-600 text-white',
+    neutral: 'bg-ink-950 text-ink-100',
+    offer: 'bg-accent-500 text-ink-950',
     info: 'bg-brand-800 text-white',
   };
 
@@ -42,14 +44,16 @@ export function AnnouncementBar(): JSX.Element | null {
   );
 }
 
+/**
+ * En-tête public volontairement simple : le logo, quatre entrées de
+ * navigation et le bouton de demande de devis. La recherche vit dans le
+ * catalogue, pas dans la barre de navigation.
+ */
 export function Header(): JSX.Element {
   const { settings } = useSettings();
   const { count, open } = useQuoteCart();
   const { categories } = useCategories();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [term, setTerm] = useState('');
-  const navigate = useNavigate();
   const location = useLocation();
 
   const topLevel = useMemo(
@@ -59,7 +63,6 @@ export function Header(): JSX.Element {
 
   useEffect(() => {
     setMobileOpen(false);
-    setSearchOpen(false);
   }, [location.pathname, location.search]);
 
   useEffect(() => {
@@ -71,44 +74,44 @@ export function Header(): JSX.Element {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setMobileOpen(false);
-        setSearchOpen(false);
-      }
+      if (event.key === 'Escape') setMobileOpen(false);
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
-  const submitSearch = (event: FormEvent) => {
-    event.preventDefault();
-    const value = term.trim();
-    if (!value) return;
-    navigate(`/catalogue?q=${encodeURIComponent(value)}`);
-    setTerm('');
-    setSearchOpen(false);
-  };
+  const isActive = (to: string): boolean =>
+    to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
 
   return (
     <>
       <AnnouncementBar />
 
-      {/* Bandeau supérieur */}
+      {/* Bandeau de contact — information utile, sans encombrer la navigation */}
       <div className="hidden border-b border-ink-200 bg-white lg:block">
         <div className="container-site flex h-10 items-center justify-between text-[13px] text-ink-600">
           <p className="font-medium">{settings.tagline}</p>
           <div className="flex items-center gap-6">
             {settings.contact_phone ? (
-              <a href={`tel:${settings.contact_phone.replace(/\s/g, '')}`} className="inline-flex items-center gap-1.5 text-ink-700 hover:text-brand-700">
+              <a
+                href={`tel:${settings.contact_phone.replace(/\s/g, '')}`}
+                className="inline-flex items-center gap-1.5 text-ink-700 no-underline hover:text-brand-700"
+              >
                 <Icon name="phone" size={14} />
                 {settings.contact_phone}
               </a>
             ) : null}
-            <a href={`mailto:${settings.contact_email}`} className="inline-flex items-center gap-1.5 text-ink-700 hover:text-brand-700">
+            <a
+              href={`mailto:${settings.contact_email}`}
+              className="inline-flex items-center gap-1.5 text-ink-700 no-underline hover:text-brand-700"
+            >
               <Icon name="mail" size={14} />
               {settings.contact_email}
             </a>
-            <Link to="/admin" className="inline-flex items-center gap-1.5 font-medium text-ink-600 hover:text-brand-700">
+            <Link
+              to="/admin"
+              className="inline-flex items-center gap-1.5 font-medium text-ink-600 no-underline hover:text-brand-700"
+            >
               <Icon name="lock" size={14} />
               Espace professionnel
             </Link>
@@ -118,36 +121,19 @@ export function Header(): JSX.Element {
 
       <header className="sticky top-0 z-50 border-b border-ink-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
         <div className="container-site">
-          <div className="flex h-[68px] items-center gap-3 lg:h-[78px]">
+          <div className="flex h-[68px] items-center justify-between gap-4 lg:h-[78px]">
             <Link to="/" aria-label={`${settings.brand_name} — accueil`} className="shrink-0">
-              <Logo compact={false} />
+              <Logo />
             </Link>
 
-            {/* Recherche — bureau */}
-            <form onSubmit={submitSearch} role="search" className="relative ml-4 hidden flex-1 lg:block">
-              <label htmlFor="header-search" className="sr-only">
-                Rechercher un équipement, une référence ou une marque
-              </label>
-              <Icon name="search" size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
-              <input
-                id="header-search"
-                type="search"
-                value={term}
-                onChange={(event) => setTerm(event.target.value)}
-                placeholder="Rechercher un équipement, une référence…"
-                maxLength={120}
-                className="h-11 w-full rounded-xl border border-ink-200 bg-ink-50 pl-11 pr-4 text-[15px] text-ink-900 placeholder:text-ink-400 transition-colors focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-600/15"
-              />
-            </form>
-
-            <nav aria-label="Navigation principale" className="ml-auto hidden items-center gap-1 lg:flex">
+            <nav aria-label="Navigation principale" className="hidden items-center gap-1 lg:flex">
               {MAIN_LINKS.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  aria-current={location.pathname.startsWith(link.to) ? 'page' : undefined}
-                  className={`rounded-lg px-3.5 py-2 text-[15px] font-semibold no-underline transition-colors ${
-                    location.pathname.startsWith(link.to)
+                  aria-current={isActive(link.to) ? 'page' : undefined}
+                  className={`rounded-lg px-4 py-2 text-[15px] font-semibold no-underline transition-colors ${
+                    isActive(link.to)
                       ? 'bg-brand-50 text-brand-800'
                       : 'text-ink-700 hover:bg-ink-100 hover:text-ink-900'
                   }`}
@@ -157,22 +143,16 @@ export function Header(): JSX.Element {
               ))}
             </nav>
 
-            <div className="ml-auto flex items-center gap-1.5 lg:ml-3">
-              <IconButton
-                icon="search"
-                label="Rechercher"
-                className="lg:hidden"
-                onClick={() => setSearchOpen((value) => !value)}
-              />
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={open}
-                className="relative inline-flex h-11 items-center gap-2 rounded-xl bg-brand-800 px-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700 sm:px-4"
+                className="relative inline-flex h-11 items-center gap-2 rounded-xl bg-brand-700 px-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-800 sm:px-4"
               >
                 <Icon name="cart" size={18} />
                 <span className="hidden sm:inline">Ma demande</span>
                 {count > 0 ? (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-500 px-1 text-[11px] font-bold text-white">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-400 px-1 text-[11px] font-bold text-ink-950">
                     {count > 99 ? '99+' : count}
                   </span>
                 ) : null}
@@ -185,36 +165,19 @@ export function Header(): JSX.Element {
               />
             </div>
           </div>
-
-          {/* Recherche mobile dépliante */}
-          {searchOpen ? (
-            <form onSubmit={submitSearch} role="search" className="border-t border-ink-200 py-3 lg:hidden">
-              <label htmlFor="header-search-mobile" className="sr-only">
-                Rechercher un équipement
-              </label>
-              <div className="relative">
-                <Icon name="search" size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
-                <input
-                  id="header-search-mobile"
-                  type="search"
-                  autoFocus
-                  value={term}
-                  onChange={(event) => setTerm(event.target.value)}
-                  placeholder="Rechercher…"
-                  maxLength={120}
-                  className="h-11 w-full rounded-xl border border-ink-300 pl-11 pr-4 text-[15px] focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-600/15"
-                />
-              </div>
-            </form>
-          ) : null}
         </div>
       </header>
 
       {/* Menu mobile plein écran */}
       {mobileOpen ? (
-        <div className="fixed inset-0 z-[60] flex flex-col bg-white lg:hidden" role="dialog" aria-modal="true" aria-label="Menu de navigation">
+        <div
+          className="fixed inset-0 z-[60] flex flex-col bg-white lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu de navigation"
+        >
           <div className="flex h-[68px] shrink-0 items-center justify-between border-b border-ink-200 px-4">
-            <Logo compact />
+            <Logo />
             <IconButton icon="close" label="Fermer le menu" onClick={() => setMobileOpen(false)} />
           </div>
 
@@ -256,7 +219,15 @@ export function Header(): JSX.Element {
           </div>
 
           <div className="shrink-0 border-t border-ink-200 p-4">
-            <Button block size="lg" icon="cart" onClick={() => { setMobileOpen(false); open(); }}>
+            <Button
+              block
+              size="lg"
+              icon="cart"
+              onClick={() => {
+                setMobileOpen(false);
+                open();
+              }}
+            >
               Ma demande de devis{count > 0 ? ` (${count})` : ''}
             </Button>
             <Link

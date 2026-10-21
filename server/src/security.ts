@@ -85,6 +85,8 @@ export function escapeHtml(input: unknown): string {
  */
 export function sanitizeHeader(input: unknown): string {
   return String(input ?? '')
+    // Les caractères de contrôle sont précisément ce que l'on supprime ici.
+    // eslint-disable-next-line no-control-regex
     .replace(/[\r\n\u0000-\u001f\u007f]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()

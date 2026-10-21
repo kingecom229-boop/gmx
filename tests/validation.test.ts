@@ -158,4 +158,14 @@ describe('productFiltersSchema', () => {
   it('refuse un tri non prévu', () => {
     expect(productFiltersSchema.safeParse({ sort: 'DROP TABLE products' }).success).toBe(false);
   });
+
+  it("interprète correctement le drapeau d'URL « featured »", () => {
+    // z.coerce.boolean('false') vaut true : d'où l'analyse explicite.
+    expect(productFiltersSchema.parse({ featured: 'false' }).featured).toBe(false);
+    expect(productFiltersSchema.parse({ featured: 'true' }).featured).toBe(true);
+    expect(productFiltersSchema.parse({ featured: '1' }).featured).toBe(true);
+    expect(productFiltersSchema.parse({ featured: '0' }).featured).toBe(false);
+    expect(productFiltersSchema.parse({}).featured).toBeUndefined();
+    expect(productFiltersSchema.parse({ featured: 'nimporte-quoi' }).featured).toBeUndefined();
+  });
 });

@@ -27,7 +27,9 @@ const VARIANTS: Record<ButtonVariant, string> = {
     'border border-ink-300 bg-white text-ink-800 hover:border-brand-500 hover:text-brand-800 disabled:text-ink-400',
   ghost: 'text-ink-700 hover:bg-ink-100 hover:text-ink-900',
   danger: 'bg-red-700 text-white hover:bg-red-600 active:bg-red-800',
-  accent: 'bg-accent-600 text-white hover:bg-accent-500 active:bg-accent-700 shadow-sm',
+  // L'or de la marque porte toujours un texte anthracite : le blanc sur or
+  // n'atteint pas le contraste minimal.
+  accent: 'bg-accent-500 text-ink-950 hover:bg-accent-400 active:bg-accent-600 shadow-sm',
 };
 
 const SIZES: Record<ButtonSize, string> = {

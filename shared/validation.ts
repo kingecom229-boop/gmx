@@ -101,6 +101,19 @@ export const adminLoginSchema = z
   })
   .strict();
 
+/**
+ * Drapeau d'URL (`?featured=true`). `z.coerce.boolean()` transformerait la
+ * chaîne « false » en `true` : on analyse explicitement les valeurs admises.
+ */
+const queryFlag = z.preprocess((value) => {
+  if (value === undefined || value === null || value === '') return undefined;
+  if (typeof value === 'boolean') return value;
+  const text = String(value).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'oui', 'on'].includes(text)) return true;
+  if (['0', 'false', 'no', 'non', 'off'].includes(text)) return false;
+  return undefined;
+}, z.boolean().optional());
+
 export const productFiltersSchema = z.object({
   q: z.string().trim().max(120).optional(),
   category: z.string().trim().max(160).optional(),
@@ -109,8 +122,8 @@ export const productFiltersSchema = z.object({
   condition: z.enum(['neuf', 'occasion']).optional(),
   min_price: z.coerce.number().min(0).optional(),
   max_price: z.coerce.number().min(0).max(100000000).optional(),
-  featured: z.coerce.boolean().optional(),
-  on_promotion: z.coerce.boolean().optional(),
+  featured: queryFlag,
+  on_promotion: queryFlag,
   sort: z
     .enum(['relevance', 'price_asc', 'price_desc', 'newest', 'popularity', 'name'])
     .default('relevance'),

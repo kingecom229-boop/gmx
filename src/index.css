@@ -5,7 +5,7 @@
 @layer base {
   :root {
     color-scheme: light;
-    --focus-ring: 2px solid #3d8651;
+    --focus-ring: 2px solid #4e9c37;
   }
 
   html {

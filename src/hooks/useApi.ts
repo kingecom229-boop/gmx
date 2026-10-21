@@ -34,9 +34,13 @@ export function useApi<T>(fetcher: (signal: AbortSignal) => Promise<T>, deps: un
       })
       .catch((caught: unknown) => {
         if (cancelled || controller.signal.aborted) return;
+        // 502 = le serveur n'a pas pu joindre Supabase : message actionnable
+        // plutôt qu'une erreur générique, sans jamais exposer la cause technique.
         const message =
           caught instanceof ApiError
-            ? caught.message
+            ? caught.status === 502
+              ? "Le service de catalogue ne répond pas : le serveur n'arrive pas à joindre la base. Vérifiez la configuration Supabase (.env) puis réessayez."
+              : caught.message
             : 'Service momentanément indisponible. Merci de réessayer.';
         setError(message);
       })

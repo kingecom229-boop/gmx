@@ -99,7 +99,7 @@ export function HomePage(): JSX.Element {
 
         <div className="container-site relative py-20 sm:py-28 lg:py-32">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-900/50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-200 backdrop-blur">
+            <span className="inline-flex items-center gap-2 rounded-full border border-accent-400/50 bg-ink-900/60 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-accent-200 backdrop-blur">
               <Icon name="leaf" size={14} />
               Matériel agricole professionnel
             </span>

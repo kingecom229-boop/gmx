@@ -252,7 +252,11 @@ catalogueRouter.get('/promotions', async (_req: Request, res: Response) => {
   if (productIds.length > 0) {
     const { data: products } = await db()
       .from('products')
-      .select('id, slug, name, price_public, price_on_quote, availability, popularity, product_images(url, alt, sort_order, is_primary)')
+      .select(
+        'id, sku, slug, name, model, condition, availability, price_public, price_on_quote, ' +
+          'short_description, is_featured, is_demo, popularity, ' +
+          'product_images(url, alt, sort_order, is_primary)',
+      )
       .in('id', productIds)
       .eq('is_active', true)
       .eq('is_archived', false);
