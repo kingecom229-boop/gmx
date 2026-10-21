@@ -1,6 +1,6 @@
 {
   "name": "gmx-motors",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "GMX Motors — plateforme commerciale premium de matériel agricole (catalogue + demandes de devis, sans paiement en ligne).",
   "type": "module",

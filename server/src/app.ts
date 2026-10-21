@@ -10,6 +10,7 @@ import { publicClient } from './supabase.js';
 import { catalogueRouter } from './routes/catalogue.js';
 import { quotesRouter } from './routes/quotes.js';
 import { adminRouter } from './routes/admin.js';
+import { APP_VERSION } from '../../shared/version.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -72,6 +73,8 @@ export function createApp(): Express {
     res.json({
       ok: true,
       service: 'gmx-motors-api',
+      // Marqueur de version : permet de vérifier quel code tourne réellement.
+      version: APP_VERSION,
       env: config.env,
       mail_configured: config.mail.provider === 'resend' && config.mail.resendApiKey.length > 0,
       secret_key_configured: config.supabaseSecretKey.length > 0,

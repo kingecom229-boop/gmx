@@ -5,6 +5,7 @@ import { api, ApiError } from '@/lib/api';
 import { useSettings } from '@/context/SettingsContext';
 import { useCategories } from '@/hooks/useCatalogue';
 import { useNavigation } from '@/hooks/useCatalogue';
+import { APP_VERSION } from '@shared/version';
 import type { Category } from '@shared/types';
 
 const LEGAL_LINKS = [
@@ -242,6 +243,8 @@ export function Footer(): JSX.Element {
             © {new Date().getFullYear()} {settings.legal_company_name || settings.brand_name}. Tous droits réservés.
             {settings.legal_company_details ? ` ${settings.legal_company_details}` : ''}
           </p>
+          {/* Marqueur de version : identifie la version réellement affichée. */}
+          <p className="mt-1 text-[11px] font-mono text-ink-600">Version {APP_VERSION}</p>
         </div>
       </div>
     </footer>
