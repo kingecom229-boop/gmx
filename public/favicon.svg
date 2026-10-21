@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GMX Motors">
+  <rect width="64" height="64" rx="14" fill="#16351f"/>
+  <path d="M12 44V20h11v7h-4.5v10H23v7H12Z" fill="#3d8651"/>
+  <path d="M26.5 44 33 20h5.3L45 44h-6l-1-4.2h-4.7L32.3 44h-5.8Zm7.2-9.2h3.1L35.2 27l-1.5 7.8Z" fill="#ffffff"/>
+  <path d="M43 44V20h9v5.4h-3.4v4h3.2v5.2h-3.2V44H43Z" fill="#3d8651"/>
+</svg>

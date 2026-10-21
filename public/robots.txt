@@ -1,0 +1,19 @@
+# GMX Motors — robots.txt
+# Les pages privées, l'administration et les données de devis ne sont jamais indexées.
+
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api
+Disallow: /api/
+Disallow: /devis/confirmation
+Disallow: /*?page=
+Disallow: /*?q=
+
+# Ressources techniques sans intérêt d'indexation
+Disallow: /*.json$
+
+# Plan du site généré dynamiquement (remplacez par votre domaine de production)
+Sitemap: https://votre-domaine.fr/sitemap.xml
