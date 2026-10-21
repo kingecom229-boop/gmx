@@ -2,6 +2,30 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError } from '@/lib/api';
 
 /**
+ * Traduit une panne en message actionnable.
+ *
+ * « La requête n'a pas abouti » n'aide personne : il faut distinguer trois
+ * causes très différentes, qui n'appellent pas le même geste.
+ */
+function messageFor(caught: unknown): string {
+  if (caught instanceof ApiError) {
+    if (caught.status >= 500) {
+      return (
+        "Le serveur répond mais n'arrive pas à joindre la base de données. " +
+        'Vérifiez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans le fichier .env, ' +
+        'puis relancez npm run dev.'
+      );
+    }
+    return caught.message;
+  }
+  // Échec réseau : aucune réponse HTTP. L'API Express n'écoute pas.
+  return (
+    "Impossible de joindre le serveur de l'application. Vérifiez que « npm run dev » " +
+    'tourne toujours dans le terminal et que le port 8787 est libre, puis cliquez sur Réessayer.'
+  );
+}
+
+/**
  * Petit hook de requête : évite d'ajouter une dépendance de data-fetching
  * tout en gérant chargement, erreur, annulation et rechargement.
  */
@@ -34,15 +58,7 @@ export function useApi<T>(fetcher: (signal: AbortSignal) => Promise<T>, deps: un
       })
       .catch((caught: unknown) => {
         if (cancelled || controller.signal.aborted) return;
-        // 502 = le serveur n'a pas pu joindre Supabase : message actionnable
-        // plutôt qu'une erreur générique, sans jamais exposer la cause technique.
-        const message =
-          caught instanceof ApiError
-            ? caught.status === 502
-              ? "Le service de catalogue ne répond pas : le serveur n'arrive pas à joindre la base. Vérifiez la configuration Supabase (.env) puis réessayez."
-              : caught.message
-            : 'Service momentanément indisponible. Merci de réessayer.';
-        setError(message);
+        setError(messageFor(caught));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

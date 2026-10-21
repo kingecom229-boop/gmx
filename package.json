@@ -22,7 +22,8 @@
     "test:watch": "vitest",
     "audit": "npm audit --omit=dev --audit-level=moderate",
     "admin:create": "tsx scripts/create-admin.ts",
-    "zip": "node scripts/make-archive.mjs"
+    "zip": "node scripts/make-archive.mjs",
+    "doctor": "node scripts/doctor.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
